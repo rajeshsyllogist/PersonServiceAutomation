@@ -1,0 +1,16 @@
+TC ID,TestCaseDescription,Status,creatorFirstName,creatorLastName,ExpectedStatus
+TC_01,CreateTeam Member,Pass,michael,cook,200
+TC_02,CreateAccountManager,Pass,samantha,slate,200
+TC_03,CreateTeamLead,Pass,rachel,wallace,200
+TC_04,CreateDirector,Pass,ken,scott,200
+TC_05,CreateVP,Pass,wayne,roberts,200
+TC_06,CreateGeneralManager,Pass,michael,cook,200
+TC_07,CreateAssociate,Pass,samantha,slate,200
+TC_08,CreateBillingUser,Pass,rachel,wallace,200
+TC_09,CreateTestLead,Pass,ken,scott,200
+TC_10,CreateApprover,Pass,wayne,roberts,200
+TC_11,CreateDCManager,Pass,michael,cook,200
+TC_12,CreateLeadManager,Pass,samantha,slate,200
+TC_13,Invalid FirstName,Pass,rachel<,wallace,400
+TC_14,Invalid LastName,Pass,ken,scott<,400
+TC_15,CreateSeniorDeveloper,Pass,marry,Ann,200

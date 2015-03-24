@@ -1,0 +1,241 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.cognizant.person.service</groupId>
+  <artifactId>PersonService-FunctionalTestAutomation</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>PersonService-FunctionalTestAutomation</name>
+  <url>http://repo.maven.apache.org/maven2/org/apache/maven/plugins/</url>
+ <!-- <url>http://maven.apache.org</url>-->
+    <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+ <pluginRepositories>
+            <pluginRepository>
+            <id>eviware</id>
+            <url>http://www.soapui.org/repository/maven2/</url>
+            </pluginRepository>
+			<pluginRepository>
+            <id>rackspace-research</id>
+            <name>Rackspace Research Repository</name>
+            <url>http://maven.research.rackspacecloud.com/content/groups/public/</url>
+        </pluginRepository>
+
+    </pluginRepositories>
+    <build>
+        <plugins>
+            <plugin>
+            <groupId>eviware</groupId>
+            <artifactId>maven-soapui-pro-plugin</artifactId>
+            <version>3.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>mysql</groupId>
+                        <artifactId>mysql-connector-java</artifactId>
+                        <version>5.1.6</version>
+                    </dependency>
+                </dependencies>    
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                       <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <projectFile>${project.basedir}/src/test/resources/PersonServiceAutomation-soapui-project.xml</projectFile>
+                       <projectProperties >
+                        <value>TEST_SUITE=${TEST_SUITE}</value>
+                       	<value>hostName=${HOST_IP}</value>
+						<value>protocol=${PROTOCOL}</value> 
+						<value>port=${PORT}</value> 
+						<value>path=/person</value>
+						<value>report=${project.basedir}/target/reports</value> 
+                         </projectProperties >
+						  <testCase>RegressionSuite</testCase>  
+                              <!-- sets logging -->  
+                          <printReport>true</printReport>  
+                          <reportFormat>PDF</reportFormat>
+                          <outputFolder>${project.basedir}/target/reports</outputFolder>
+                        <!--    <tasks>
+                          
+                          <delete file="{${project.basedir}\CMSoapProject\creditmemo_global.properties"/>
+                         <copy file="src/main/resources/${env}.properties"
+                         tofile="{${project.basedir}\CMSoapProject\creditmemo_test.properties"/>
+                        </tasks>-->
+               
+                            </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+         </plugins>
+    </build>
+    <dependencies>
+  	  <dependency>
+        <groupId>com.jgoodies</groupId>
+        <artifactId>forms</artifactId>
+        <version>1.2.1</version>
+    </dependency>
+    <dependency>
+        <groupId>jgoodies</groupId>
+        <artifactId>binding</artifactId>
+        <version>1.0</version>
+    </dependency>
+<!--starting adding 3.0 soap maven plugin dependencies
+<dependency>
+  <groupId>license4j</groupId>
+  <artifactId>license4j</artifactId>
+  <version>1.3</version>
+</dependency>
+<dependency>
+  <groupId>opencsv</groupId>
+  <artifactId>opencsv</artifactId>
+  <version>1.8</version>
+</dependency>
+<dependency>
+  <groupId>jcalendar</groupId>
+  <artifactId>jcalendar</artifactId>
+  <version>1.3.2</version>
+</dependency><dependency>
+  <groupId>l2fprod</groupId>
+  <artifactId>l2fprod-common-fontchooser</artifactId>
+  <version>7.3</version>
+</dependency>
+<dependency>
+  <groupId>saxon</groupId>
+  <artifactId>saxon</artifactId>
+  <version>9.1.0.6j</version>
+</dependency>
+<dependency>
+  <groupId>saxon</groupId>
+  <artifactId>saxon-dom</artifactId>
+  <version>9.1.0.6j</version>
+</dependency>
+<dependency>
+  <groupId>jetty</groupId>
+  <artifactId>jetty-util</artifactId>
+  <version>6.1.15</version>
+ </dependency>
+<dependency>
+  <groupId>jxl</groupId>
+  <artifactId>jxl</artifactId>
+  <version>2.6.10</version>
+</dependency>
+<dependency>
+  <groupId>idw</groupId>
+  <artifactId>idw</artifactId>
+  <version>1.5.0</version>
+</dependency>
+<dependency>
+  <groupId>jfree</groupId>
+  <artifactId>jfreechart</artifactId>
+  <version>1.0.13</version>
+ </dependency>
+<dependency>
+  <groupId>jfree</groupId>
+  <artifactId>jcommon</artifactId>
+  <version>1.0.16</version>
+ </dependency>
+
+<dependency>
+  <groupId>teamdev</groupId>
+  <artifactId>jxbrowser</artifactId>
+  <version>1.3.21478.301</version>
+</dependency>
+<dependency>
+  <groupId>groovy</groupId>
+  <artifactId>groovy-all</artifactId>
+  <version>1.6.4</version>
+</dependency>
+<dependency>
+  <groupId>jetty</groupId>
+  <artifactId>jetty</artifactId>
+  <version>6.1.15</version>
+</dependency>
+<dependency>
+ <groupId>commons-ssl</groupId>
+  <artifactId>not-yet-commons-ssl</artifactId>
+  <version>0.3.10</version>
+</dependency>
+ -->
+</dependencies>
+  <repositories>
+  <!-- 
+        <repository>
+            <id>Rackspace Nexus Repository</id>
+            <name>Rackspace Nexus Repository</name>
+            <url>http://d-build1.iad2.corp.rackspace.com:8100/nexus/content/groups/public</url>
+            <releases>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </releases>
+            <snapshots>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
+        </repository>
+		        <repository>
+            <id>Rackspace Nexus Thirdparty Repository</id>
+            <name>Rackspace Nexus Thirdparty Repository</name>
+            <url>http://d-build1.iad2.corp.rackspace.com:8100/nexus/content/repositories/thirdparty/</url>
+            <releases>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </releases>
+            <snapshots>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
+        </repository>
+		
+		
+		
+        <repository>
+            <id>rackspace-research</id>
+            <name>Rackspace Research Repository</name>
+            <url>http://maven.research.rackspacecloud.com/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>cucumber-jvm</id>
+            <url>http://oss.sonatype.org</url>
+        </repository>
+        <repository>
+            <id>codehaus</id>
+            <url>http://repository.codehaus.org</url>
+        </repository>
+        <repository>
+            <id>apache-releases</id>
+            <url>https://repository.apache.org/content/repositories/releases</url>
+        </repository>
+
+        <repository>
+            <id>Rackspace Snapshots Nexus Repository</id>
+            <name>Rackspace Snapshots Nexus Repository</name>
+            <url>http://d-build1.iad2.corp.rackspace.com:8100/nexus/content/groups/public-snapshots/</url>
+            <releases>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </releases>
+            <snapshots>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
+        </repository>
+        -->
+        <repository>
+            <id>sonatype releases</id>
+            <url>https://oss.sonatype.org/content/repositories/releases</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>thirdparty-releases</id>
+            <name>JBoss Thirdparty Releases</name>
+            <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+</project>

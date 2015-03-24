@@ -1,0 +1,7 @@
+/target/
+.classpath
+.settings/
+.project
+application.log
+soapui-errors.log
+soapui.log

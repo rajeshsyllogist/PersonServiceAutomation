@@ -1,0 +1,6 @@
+TC ID,TestCaseDescription,Status,creatorFirstName,creatorLastName,ExpectedStatus
+TC_01,CreateTeam Member,Pass,michael,cook,200
+TC_02,CreateAccountManager,Pass,samantha,slate,200
+TC_03,CreateTeamLead,Pass,rachel,wallace,200
+TC_04,CreateSegmentDirector,Pass,ken,scott,200
+TC_05,CreateVP,Pass,wayne,roberts,200

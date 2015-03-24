@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project activeEnvironment="Default" name="PersonServiceAutomation" resourceRoot="" soapui-version="4.5.1" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:RestService" wadlVersion="http://wadl.dev.java.net/2009/02" name="PersonServiceAutomation" type="rest" id="0c92a66e-5be5-406c-bb6b-55ebadc345ce" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints><con:endpoint>${#TestSuite#ENDPOINT}</con:endpoint></con:endpoints><con:resource name="PersonDetails" path="v1/person" id="141f1782-f07a-4da2-84b9-40fd24d829fd"><con:settings/><con:parameters/><con:method name="storePerson" method="POST" id="fe923f6d-415a-4b67-a346-81c993cc579c"><con:settings/><con:parameters><con:parameter><con:name>person</con:name><con:value/><con:style>QUERY</con:style><con:default/></con:parameter></con:parameters><con:representation type="FAULT"><con:mediaType>text/html</con:mediaType><con:status>404 400</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/xml</con:mediaType><con:params/><con:element>person</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/xml</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:request name="Request 1" mediaType="application/xml" postQueryString="false" id="abcab449-994f-4304-8cf8-76c110b8fd1a"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://10.5.73.11:3030</con:endpoint><con:request><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<person>
+<firstName>test</firstName>
+<lastName>test</lastName>
+</person>
+]]></con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method><con:method name="getPersons" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/xml</con:mediaType><con:status>200</con:status><con:params/><con:element>personList</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" mediaType="application/xml"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://10.5.73.11:3030</con:endpoint><con:request/><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method><con:method name="getPersonbyId" method="GET"><con:settings/><con:parameters><con:parameter><con:name>id</con:name><con:value/><con:style>TEMPLATE</con:style><con:default/></con:parameter></con:parameters><con:representation type="RESPONSE"><con:mediaType>application/xml</con:mediaType><con:status>200</con:status><con:params/><con:element>personList</con:element></con:representation><con:request name="Request 1" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://10.5.73.11:3030</con:endpoint><con:request/><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="id" value="2" xmlns="http://eviware.com/soapui/config"/></con:parameters></con:request></con:method></con:resource></con:interface><con:testSuite name="PersonServiceAutomationTestSuite" id="3c01662e-a291-4882-81a9-31930725bde3"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="RegressionSuite" searchProperties="true" id="fd062135-5ac7-4ab8-9362-5838d5a57186"><con:settings/><con:testStep type="groovy" name="Init" id="4e257262-1c53-43cf-a721-910efec23132"><con:settings/><con:config><script>
+import java.uitl.*;
+def status= "fail"
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils(context); 
+def environment ="";
+def core_endpoint="";
+def creditmemo_endpoint ="";
+
+//Load the properties file and set all Project properties 
+
+props = new java.util.Properties();
+environment = context.expand( '${#Project#TEST_SUITE}' )
+log.info "TestSuite to execute "+environment
+props.load( new FileInputStream(groovyUtils.projectPath+"/properties/"+"person.service.application."+environment+".properties"));
+log.info "Loaded Properties file from"+ groovyUtils.projectPath+"/properties/"+"person.service.application."+environment+".properties"
+
+//Initialize the varibles
+
+
+endpoint =context.expand( '${#Project#protocol}' )+"://"+context.expand( '${#Project#hostName}' )+":"+context.expand( '${#Project#port}' )
+log.info "END_POINT :" +endpoint
+
+testRunner.testCase.testSuite.setPropertyValue("ENDPOINT",endpoint)
+testRunner.testCase.testSuite.setPropertyValue("CREATE_PERSON_DETAILS_TEST_DATA", props.getProperty("CREATE_PERSON_DETAILS_TEST_DATA"))
+
+def target =context.expand( '${#Project#report}' )
+def summary_path =target+"//Summary.html"
+testRunner.testCase.testSuite.setPropertyValue("summary_path", summary_path )
+
+def CM_file_path=target+"//Create_PersonDetails_Report.html"
+testRunner.testCase.testSuite.setPropertyValue("CM_file_path",CM_file_path)
+
+def GP_file_path=target+"//Get_PersonsDetails_Report.html"
+testRunner.testCase.testSuite.setPropertyValue("GP_file_path",GP_file_path)
+
+testRunner.testCase.testSuite.setPropertyValue("Total_Passed_Count","0");
+testRunner.testCase.testSuite.setPropertyValue("Total_Failed_Count","0");
+</script></con:config></con:testStep><con:testStep type="calltestcase" name="RunCreatePersonDetails"><con:settings/><con:config xsi:type="con:RunTestCaseStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:targetTestCase>92d1067c-3b05-40d1-be23-30ef6d6229e9</con:targetTestCase><con:properties><con:property><con:name>TC_ID</con:name></con:property><con:property><con:name>TestCaseDescription</con:name></con:property><con:property><con:name>Status</con:name></con:property><con:property><con:name>WorkFlow</con:name></con:property><con:property><con:name>createdBy</con:name></con:property><con:property><con:name>account</con:name></con:property><con:property><con:name>accountContactName</con:name></con:property><con:property><con:name>customerName</con:name></con:property><con:property><con:name>customerNumber</con:name></con:property><con:property><con:name>incidentDate</con:name></con:property><con:property><con:name>opportunityNumber</con:name></con:property><con:property><con:name>serviceFailure</con:name></con:property><con:property><con:name>IncidentId</con:name></con:property><con:property><con:name>InvoiceNo</con:name></con:property><con:property><con:name>TicketNo</con:name></con:property><con:property><con:name>currency</con:name></con:property><con:property><con:name>AccountLevelProduct</con:name></con:property><con:property><con:name>amount</con:name></con:property><con:property><con:name>calculation</con:name></con:property><con:property><con:name>earnedRevenue</con:name></con:property><con:property><con:name>billingLocation</con:name></con:property><con:property><con:name>resDepartment</con:name></con:property><con:property><con:name>team</con:name></con:property><con:property><con:name>reasonForCredit</con:name></con:property><con:property><con:name>prevention</con:name></con:property><con:property><con:name>accountType</con:name></con:property><con:property><con:name>FirstName</con:name></con:property><con:property><con:name>LastName</con:name></con:property><con:property><con:name>isPrivateTicket</con:name></con:property><con:property><con:name>ExpectedStatus</con:name></con:property><con:property><con:name>SLANumber</con:name></con:property><con:property><con:name>Server</con:name></con:property><con:property><con:name>token</con:name></con:property><con:property><con:name>creditMemoId</con:name></con:property><con:property><con:name>SearchsStatus</con:name></con:property><con:property><con:name>testdata_path</con:name></con:property><con:property><con:name>results_path</con:name></con:property><con:property><con:name>SearchStatus</con:name></con:property><con:property><con:name>Comments</con:name></con:property><con:property><con:name>ErrorMsg</con:name></con:property><con:property><con:name>CreateStatus</con:name></con:property><con:property><con:name>createCreditMemoRequest</con:name></con:property><con:property><con:name>createCreditMemoResponse</con:name></con:property><con:property><con:name>SearchCreditMemoRequest</con:name></con:property><con:property><con:name>SearchCreditMemoResponse</con:name></con:property><con:property><con:name>TC_Status</con:name></con:property><con:property><con:name>Output</con:name></con:property><con:property><con:name>creatorSSO</con:name></con:property><con:property><con:name>InvoiceItemId</con:name></con:property><con:property><con:name>reasoncode</con:name></con:property><con:property><con:name>description</con:name></con:property><con:property><con:name>commentType</con:name></con:property><con:property><con:name>commentText</con:name></con:property></con:properties><con:returnProperties/><con:runMode>SINGLETON_AND_WAIT</con:runMode></con:config></con:testStep><con:testStep type="calltestcase" name="RunGetPersonsDetails"><con:settings/><con:config xsi:type="con:RunTestCaseStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:targetTestCase>976f0bef-f66e-4a21-b3f7-dcec535b84ff</con:targetTestCase><con:properties><con:property><con:name>TC_ID</con:name></con:property><con:property><con:name>TestCaseDescription</con:name></con:property><con:property><con:name>Status</con:name></con:property><con:property><con:name>WorkFlow</con:name></con:property><con:property><con:name>createdBy</con:name></con:property><con:property><con:name>account</con:name></con:property><con:property><con:name>accountContactName</con:name></con:property><con:property><con:name>customerName</con:name></con:property><con:property><con:name>customerNumber</con:name></con:property><con:property><con:name>incidentDate</con:name></con:property><con:property><con:name>opportunityNumber</con:name></con:property><con:property><con:name>serviceFailure</con:name></con:property><con:property><con:name>IncidentId</con:name></con:property><con:property><con:name>InvoiceNo</con:name></con:property><con:property><con:name>TicketNo</con:name></con:property><con:property><con:name>currency</con:name></con:property><con:property><con:name>AccountLevelProduct</con:name></con:property><con:property><con:name>amount</con:name></con:property><con:property><con:name>calculation</con:name></con:property><con:property><con:name>earnedRevenue</con:name></con:property><con:property><con:name>billingLocation</con:name></con:property><con:property><con:name>resDepartment</con:name></con:property><con:property><con:name>team</con:name></con:property><con:property><con:name>reasonForCredit</con:name></con:property><con:property><con:name>prevention</con:name></con:property><con:property><con:name>accountType</con:name></con:property><con:property><con:name>FirstName</con:name></con:property><con:property><con:name>LastName</con:name></con:property><con:property><con:name>isPrivateTicket</con:name></con:property><con:property><con:name>ExpectedStatus</con:name></con:property><con:property><con:name>SLANumber</con:name></con:property><con:property><con:name>Server</con:name></con:property><con:property><con:name>token</con:name></con:property><con:property><con:name>creditMemoId</con:name></con:property><con:property><con:name>SearchsStatus</con:name></con:property><con:property><con:name>testdata_path</con:name></con:property><con:property><con:name>results_path</con:name></con:property><con:property><con:name>SearchStatus</con:name></con:property><con:property><con:name>Comments</con:name></con:property><con:property><con:name>ErrorMsg</con:name></con:property><con:property><con:name>CreateStatus</con:name></con:property><con:property><con:name>createCreditMemoRequest</con:name></con:property><con:property><con:name>createCreditMemoResponse</con:name></con:property><con:property><con:name>SearchCreditMemoRequest</con:name></con:property><con:property><con:name>SearchCreditMemoResponse</con:name></con:property><con:property><con:name>TC_Status</con:name></con:property><con:property><con:name>Output</con:name></con:property><con:property><con:name>creatorSSO</con:name></con:property><con:property><con:name>InvoiceItemId</con:name></con:property><con:property><con:name>reasoncode</con:name></con:property><con:property><con:name>description</con:name></con:property><con:property><con:name>commentType</con:name></con:property><con:property><con:name>commentText</con:name></con:property></con:properties><con:returnProperties/><con:runMode>SINGLETON_AND_WAIT</con:runMode></con:config></con:testStep><con:testStep type="groovy" name="GenerateReportGlobal" id="4b190079-b5ea-470b-8f77-cf9eb50807af"><con:settings/><con:config><script><![CDATA[def summary_path =testRunner.testCase.testSuite.getPropertyValue("summary_path");
+def file = new PrintWriter(summary_path)
+
+int  pass =context.expand( '${#TestSuite#Pass_Count_1}' ).toInteger()+context.expand( '${#TestSuite#Pass_Count_2}' ).toInteger();
+int  fail =context.expand( '${#TestSuite#Fail_Count_1}' ).toInteger()+context.expand( '${#TestSuite#Fail_Count_2}' ).toInteger();
+int  total =context.expand( '${#TestSuite#TestCase_Count_1}' ).toInteger()+context.expand( '${#TestSuite#TestCase_Count_2}' ).toInteger();
+
+
+file.println("<html><head>PersonService ExecutionSummary Status</head><body ><table border ='1' ><tr border ='1' bgcolor='green'><td><h3>TestSuite Name</h3></td><td><h3>Total No of TestCases</h3></td><td><h3>Passed Count</h3></td><td><h3>FailedCount</h3></td></tr>")
+file.println("<tr><td>"+ context.expand( '${#TestSuite#TestSuite_Name_1}' ) +"</td>")
+file.println("<td>"+ context.expand( '${#TestSuite#TestCase_Count_1}' ) +"</td>")
+file.println("<td>"+ context.expand( '${#TestSuite#Pass_Count_1}' ) +"</td>")
+file.println("<td>"+ context.expand( '${#TestSuite#Fail_Count_1}' ) +"</td></tr>")
+file.println("<tr><td>"+ context.expand( '${#TestSuite#TestSuite_Name_2}' ) +"</td>")
+file.println("<td>"+ context.expand( '${#TestSuite#TestCase_Count_2}' ) +"</td>")
+file.println("<td>"+ context.expand( '${#TestSuite#Pass_Count_2}' ) +"</td>")
+file.println("<td>"+ context.expand( '${#TestSuite#Fail_Count_2}' ) +"</td></tr>")
+file.println("<tr><td>"+ "Total"+"</td>")
+file.println("<td>"+ total.toString()+"</td>")
+file.println("<td>"+ pass.toString()+"</td>")
+file.println("<td>"+fail.toString()+"</td></tr>")
+file.println("</table></body></html>")
+file.flush()
+file.close()
+
+]]></script></con:config></con:testStep><con:properties><con:property><con:name>CORE_ENDPOINT</con:name><con:value>https://ws.staging.core.com/newsoap/mycompany</con:value></con:property><con:property><con:name>CM_ENDPOINT</con:name><con:value>https://staging.creditmemos.api.company.com</con:value></con:property><con:property><con:name>CS_ENDPOINT</con:name><con:value>https://ws.staging.core.company.com/newsoap/mycompany</con:value></con:property><con:property><con:name>summary_path</con:name><con:value>C:\Users\kanc0573\workspace\cmws\CMSoapProject\Output\Summary.html</con:value></con:property><con:property><con:name>CM_file_path</con:name><con:value>C:\Users\kanc0573\workspace\CreditMemoAutomation\CMSoapProject\Output\Create_CreditMemo_Report.html</con:value></con:property><con:property><con:name>Modify_file_path</con:name><con:value>C:\Users\kanc0573\workspace\CreditMemoAutomation\CMSoapProject\Output\Modify_CreditMemo_Report.html</con:value></con:property></con:properties><con:reportParameters/><con:breakPoints><con:testStepId>0c93d15b-0619-43e5-984d-24e3c36fda71</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints></con:testCase><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Create_Person_Details" searchProperties="true" id="92d1067c-3b05-40d1-be23-30ef6d6229e9"><con:description>TestCase generated for REST Resource [creditmemos] located at [/creditmemos]</con:description><con:settings/><con:testStep type="groovy" name="Init"><con:settings/><con:config><script>//set  the testdate file
+
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils(context); 
+def csv_name = testRunner.testCase.testSuite.getPropertyValue("CREATE_PERSON_DETAILS_TEST_DATA")
+def test_data =groovyUtils.projectPath+"/TestData/"+csv_name;
+
+testRunner.testCase.setPropertyValue("testdata_path",test_data)
+testRunner.testCase.testSuite.setPropertyValue("TestSuite_Name_1","CreatePersonDetails");
+testRunner.testCase.testSuite.setPropertyValue("Pass_Count_1","0");
+testRunner.testCase.testSuite.setPropertyValue("Fail_Count_1","0");
+testRunner.testCase.testSuite.setPropertyValue("Output","");
+</script></con:config></con:testStep><con:testStep type="groovy" name="LoadTestData"><con:settings/><con:config><script>import com.eviware.soapui.*;
+import org.codehaus.groovy.*;
+def testDataSet = []
+def failureList = []
+def fileName = testRunner.testCase.getPropertyValue("testdata_path")
+// Opens file, iterates through each line, splits the line on the commas into an array, and adds
+// the array to testDataSet. (So testDataSet is an array of arrays).
+
+new File(fileName).eachLine { line -> testDataSet.add( line.split(",") ) }
+
+
+
+// If any iteration fails, it will add an entry to the failure list, and they will all be printed at the end
+context.setProperty( "failureList", failureList )
+
+// Store the test data in a property called "testData"
+context.setProperty( "testDataSet", testDataSet )
+
+
+// This indicates which line of the file we will start reading from (0 = first line, 1 = second line, etc.)
+// We are starting at the second line because the CSV contains a header row at the top that explains what
+//   each column means
+def testDataLine =[];
+//groovy script to read values from properties
+
+ testDataSet = context.getProperty("testDataSet") // Retrieve the test data from the testData property
+
+int size = testDataSet.size();
+int count= size-1;
+log.info( "Read " + count + " test values from " + fileName )
+testRunner.testCase.testSuite.setPropertyValue("TestCase_Count_1", count.toString())
+
+// Track which line of the test input file we're on
+for(int index =1; index&lt;size ;index= index+1){
+testDataLine= testDataSet[index] // Select the current test data line
+def props = testRunner.testCase
+
+log.info "-------------TEST_CASE_EXECUTION------------------------"
+log.info"Executing  Test Case id "+ testDataLine[0];
+log.info"TestCaseDescription-"+ testDataLine[1];
+
+props.setPropertyValue("TC_ID", testDataLine[0])
+props.setPropertyValue("TestCaseDescription", testDataLine[1])
+props.setPropertyValue("TC_Status", testDataLine[2])
+props.setPropertyValue("firstName", testDataLine[3])
+props.setPropertyValue("LastName", testDataLine[4])
+props.setPropertyValue("ExpectedStatus", testDataLine[5])
+testRunner.runTestStepByName( "CreatePersonDetails")
+testRunner.runTestStepByName( "ValidateCreatePerson")
+testRunner.runTestStepByName( "SetStatus")
+}
+testRunner.runTestStepByName( "GenerateReport")	
+testRunner.gotoStepByName( "Exit")	
+ </script></con:config></con:testStep><con:testStep type="restrequest" name="CreatePersonDetails"><con:settings/><con:config service="PersonServiceAutomation" resourcePath="/v1/person" methodName="storePerson" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="CreateCreditMemo" mediaType="application/xml" postQueryString="false" id="0aeb1743-5af9-4ab1-816a-7b1b2e6ddc6b"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>${#TestSuite#ENDPOINT}</con:endpoint><con:request><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<person>
+<firstName>${#TestCase#firstName}</firstName>
+<lastName>${#TestCase#lastName}</lastName>
+</person>
+
+]]></con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="ValidateCreatePerson"><con:settings/><con:config><script>import com.eviware.soapui.*;
+
+String createRawRequest = "NA"
+String createRawResponse = "NA"
+
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils( context )
+def httpResponseHeaders = context.testCase.testSteps["CreatePersonDetails"].testRequest.response.responseHeaders
+def httpStatus = httpResponseHeaders["#status#"]
+def httpStatusCode = (httpStatus =~ "[1-5]\\d\\d")[0]
+
+
+def responseStatus = httpStatusCode
+//xmlResp.responseCode
+log.info "Actual_Status:"+responseStatus
+//responseStatus =responseStatus.replace(" ","")
+def exp_status =context.expand( '${#TestCase#ExpectedStatus}')
+log.info "Expected_Status:"+exp_status
+if( responseStatus.equals(context.expand( '${#TestCase#ExpectedStatus}' ))){
+	status = "Pass"
+}
+else{
+	status="Fail"
+}
+
+
+testRunner.testCase.setPropertyValue("Status",status)
+log.info "status:" + status
+createRawRequest = new String(testRunner.testCase.testSteps["CreatePersonDetails"].testRequest.response.rawRequestData)
+createRawResponse =httpResponseHeaders.toString();
+
+log.info "--------------------------------------"
+log.info "CreatePersonDetailsRequest"
+log.info "--------------------------------------"
+log.info createRawRequest
+log.info "--------------------------------------"
+log.info "CreatePersonDetailsResponse"
+log.info "--------------------------------------"
+log.info createRawResponse
+log.info "--------------------------------------"
+ createRawRequest = createRawRequest.replace("&lt;","&amp;lt;");
+ createRawRequest = createRawRequest.replace(">","&amp;gt;");
+
+testRunner.testCase.setPropertyValue("CreatePersonDetailsRequest",createRawRequest);
+testRunner.testCase.setPropertyValue("CreatePersonDetailsResponse",createRawResponse)
+
+
+</script></con:config></con:testStep><con:testStep type="groovy" name="SetStatus"><con:settings/><con:config><script><![CDATA[int pass_count =testRunner.testCase.testSuite.getPropertyValue("Pass_Count_1").toInteger();
+int fail_count =testRunner.testCase.testSuite.getPropertyValue("Fail_Count_1").toInteger();
+testRunner.testCase.testSuite.setPropertyValue("TestSuite_Name","CreatePersonDetails");
+
+if(testRunner.testCase.getPropertyValue("Status").equals("Pass")){
+ pass_count=pass_count+1;
+	testRunner.testCase.testSuite.setPropertyValue("Pass_Count_1",pass_count.toString());
+
+}
+else {
+	fail_count=fail_count+1;
+	testRunner.testCase.testSuite.setPropertyValue("Fail_Count_1",fail_count.toString());
+	
+}
+
+//log.info "pass_count"+pass_count ;
+//log.info "fail_count"+fail_count
+
+createRawRequest=testRunner.testCase.getPropertyValue("CreatePersonDetailsRequest");
+createRawResponse=testRunner.testCase.getPropertyValue("CreatePersonDetailsResponse")
+
+String output=testRunner.testCase.getPropertyValue("Output")
+
+if(output!=null){
+	output = output + "<tr><td>"+ context.expand( '${#TestCase#TC_ID}' ) +"</td>"+
+	            "<td>"+ context.expand( '${#TestCase#TestCaseDescription}' ) +"</td>"+
+                "<td>"+ context.expand( '${#TestCase#Status}' ) +"</td>"+
+                "<td>"+ createRawRequest +"</td>"+
+                "<td>"+ createRawResponse  +"</td>"+
+                 "<td>"+ context.expand( '${#TestCase#ErrorMsg}') +"</td></tr>" 
+}
+
+else{
+          output = "<tr><td>"+ context.expand( '${#TestCase#TC_ID}' ) +"</td>"+
+	            "<td>"+ context.expand( '${#TestCase#TestCaseDescription}' ) +"</td>"+
+                "<td>"+ context.expand( '${#TestCase#Status}' ) +"</td>"+
+                 "<td>"+ createRawRequest +"</td>"+
+                "<td>"+ createRawResponse  +"</td>"+
+                 "<td>"+ context.expand( '${#TestCase#ErrorMsg}') +"</td></tr>" 
+}
+    
+testRunner.testCase.setPropertyValue("Output",output)]]></script></con:config></con:testStep><con:testStep type="groovy" name="GenerateReport"><con:settings/><con:config><script><![CDATA[
+def file_path =testRunner.testCase.testSuite.getPropertyValue("CM_file_path");
+log.info "Results generated in "+file_path
+def file = new PrintWriter(file_path)
+String output=testRunner.testCase.getPropertyValue("Output")
+
+String header ="<html><head>Create_Person_Service</head><body ><table border ='1' ><tr border ='1' bgcolor='green'><td><h3>TestCase_No</h3></td><td><h3>Description</h3></td><td><h3>Status</h3></td><td><h3>CreatePersonRequest</h3></td><td><h3>CreatePersonResponse</h3></td><td><h3>Error Message</h3></td></tr>";
+String trailer ="</td></tr></table></body></html>"
+
+file.println(header+output+trailer)
+file.flush()
+file.close()
+int pass_count= testRunner.testCase.testSuite.getPropertyValue("Pass_Count_1").toInteger()
+int fail_count= testRunner.testCase.testSuite.getPropertyValue("Fail_Count_1").toInteger()
+int total_count =pass_count+fail_count
+testRunner.testCase.testSuite.setPropertyValue("TestCase_Count_1",total_count.toString());
+log.info "-----------TEST_SUITE_SUMMARY---------"
+log.info "Total  No of testcases :"+total_count;
+log.info "Total  No of testcases Passed:"+pass_count;
+log.info "Total  No of testcases Failed:"+fail_count;
+log.info "CREATE_PERSON_DETAILS="+pass_count
+log.info "--------------------------------------"]]></script></con:config></con:testStep><con:testStep type="groovy" name="Exit"><con:settings/><con:config><script>log.info "Exited Succesfully"</script></con:config></con:testStep><con:properties><con:property><con:name>TC_ID</con:name><con:value>TC_01</con:value></con:property><con:property><con:name>TestCaseDescription</con:name><con:value>AmountRange&lt;1000</con:value></con:property><con:property><con:name>Status</con:name><con:value>Pass</con:value></con:property><con:property><con:name>WorkFlow</con:name><con:value>Implementation Team</con:value></con:property><con:property><con:name>createdBy</con:name><con:value>michael.cook</con:value></con:property><con:property><con:name>account</con:name><con:value>80122</con:value></con:property><con:property><con:name>accountContactName</con:name><con:value>Kevin Ellenwood</con:value></con:property><con:property><con:name>customerName</con:name><con:value>TestCustomer1</con:value></con:property><con:property><con:name>customerNumber</con:name><con:value>RCN-000-024-238</con:value></con:property><con:property><con:name>incidentDate</con:name><con:value>03/12/2013</con:value></con:property><con:property><con:name>opportunityNumber</con:name><con:value>oppnumber</con:value></con:property><con:property><con:name>serviceFailure</con:name><con:value>100</con:value></con:property><con:property><con:name>IncidentId</con:name><con:value>123345440</con:value></con:property><con:property><con:name>InvoiceNo</con:name><con:value>100774781</con:value></con:property><con:property><con:name>TicketNo</con:name><con:value>101118-03433</con:value></con:property><con:property><con:name>currency</con:name><con:value>USD</con:value></con:property><con:property><con:name>AccountLevelProduct</con:name><con:value>181</con:value></con:property><con:property><con:name>amount</con:name><con:value>4956.23</con:value></con:property><con:property><con:name>calculation</con:name><con:value>Calculation</con:value></con:property><con:property><con:name>earnedRevenue</con:name><con:value>true</con:value></con:property><con:property><con:name>billingLocation</con:name><con:value>US</con:value></con:property><con:property><con:name>resDepartment</con:name><con:value>70</con:value></con:property><con:property><con:name>team</con:name><con:value>196</con:value></con:property><con:property><con:name>reasonForCredit</con:name><con:value>Credit  reason</con:value></con:property><con:property><con:name>prevention</con:name><con:value>Prevention</con:value></con:property><con:property><con:name>accountType</con:name><con:value>MANAGED_HOSTING</con:value></con:property><con:property><con:name>FirstName</con:name><con:value>Jason</con:value></con:property><con:property><con:name>LastName</con:name><con:value>Choe</con:value></con:property><con:property><con:name>isPrivateTicket</con:name><con:value>false</con:value></con:property><con:property><con:name>ExpectedStatus</con:name><con:value>201</con:value></con:property><con:property><con:name>SLANumber</con:name><con:value>slano1</con:value></con:property><con:property><con:name>Server</con:name><con:value/></con:property><con:property><con:name>token</con:name><con:value>880b650842289ca50d569a670707d840</con:value></con:property><con:property><con:name>creditMemoId</con:name><con:value>NA</con:value></con:property><con:property><con:name>SearchsStatus</con:name><con:value>Fail</con:value></con:property><con:property><con:name>testdata_path</con:name><con:value>C:\Users\kanc0573\ProjectDocs\workspace\cloudcreditmemo\servicetest\CreditMemo\src\test\resources//TestData//null</con:value></con:property><con:property><con:name>results_path</con:name><con:value>D:\Perumal\MarchMonth\march19\Updated\CreditMemoWebServicesAutomation\Output\Reports.html</con:value></con:property><con:property><con:name>SearchStatus</con:name><con:value>Fail</con:value></con:property><con:property><con:name>Comments</con:name><con:value>Invalid team</con:value></con:property><con:property><con:name>ErrorMsg</con:name><con:value/></con:property><con:property><con:name>CreateStatus</con:name><con:value>Fail</con:value></con:property><con:property><con:name>createCreditMemoRequest</con:name><con:value>POST http://10.6.115.86:3030/credit-memo-service-0.1-SNAPSHOT/v2/creditMemos HTTP/1.1
+Accept-Encoding: gzip,deflate
+X-Auth-Token: 
+Content-Type: application/xml
+Content-Length: 1019
+Host: 10.6.115.86:3030
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.1.1 (java 1.5)
+
+</con:value></con:property><con:property><con:name>createCreditMemoResponse</con:name><con:value>Date : Wed, 24 Apr 2013 19:36:19 GMT
+#status# : HTTP/1.1 201 Created
+Content-Length : 0
+Location : http://localhost:8080/credit-memo-service/v2/creditMemos/
+Content-Type : application/xml
+Server : GlassFish Server Open Source Edition 3.0.1
+X-Powered-By : Servlet/3.0
+</con:value></con:property><con:property><con:name>SearchCreditMemoRequest</con:name><con:value>NA</con:value></con:property><con:property><con:name>SearchCreditMemoResponse</con:name><con:value>NA</con:value></con:property><con:property><con:name>TC_Status</con:name><con:value>Pass</con:value></con:property><con:property><con:name>Output</con:name><con:value><![CDATA[null<tr><td>TC01</td><td>Fail</td><td>Null</td><td>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;creditMemoInput xsi:schemaLocation="https://staging.creditmemos.api.company.com/v1.0/docs/Schemas/CreditMemo.xsd" xmlns="https://creditmemo.api.company.com/CreditMemo" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+&lt;serviceFailure&gt;100&lt;/serviceFailure&gt;
+&lt;product&gt;
+&lt;accountLevelProductId&gt;181&lt;/accountLevelProductId&gt;
+&lt;/product&gt;
+&lt;!--&lt;devices&gt;&lt;/devices&gt;--&gt;
+&lt;incidentDate&gt;03/12/2013&lt;/incidentDate&gt;
+&lt;tickets&gt;&lt;id&gt;101118-03433&lt;/id&gt;&lt;/tickets&gt;
+&lt;invoices&gt;&lt;id&gt;100774781&lt;/id&gt;&lt;/invoices&gt;
+&lt;creditAmount&gt;
+&lt;currency&gt;USD&lt;/currency&gt;
+&lt;amount&gt;4956.23&lt;/amount&gt;
+&lt;/creditAmount&gt;
+&lt;calculation&gt;Calculation&lt;/calculation&gt;
+&lt;earnedRevenue&gt;true&lt;/earnedRevenue&gt;
+&lt;responsibleDept&gt;70&lt;/responsibleDept&gt;
+&lt;team&gt;196&lt;/team&gt;
+&lt;billingLocation&gt;US&lt;/billingLocation&gt;
+&lt;reasonForCredit&gt;Credit  reason&lt;/reasonForCredit&gt;
+&lt;prevention&gt;Prevention&lt;/prevention&gt;
+&lt;createdBy&gt;michael.cook&lt;/createdBy&gt;
+&lt;account&gt;80122&lt;/account&gt;
+&lt;accountContactName&gt;Kevin Ellenwood&lt;/accountContactName&gt;
+&lt;customerName&gt;TestCustomer1&lt;/customerName&gt;
+&lt;customerNumber&gt;RCN-000-024-238&lt;/customerNumber&gt;
+&lt;isPrivateTicket&gt;false&lt;/isPrivateTicket&gt;
+&lt;tokenId&gt;6a0a709e26121aaf7f60961bac4cab25&lt;/tokenId&gt;
+&lt;userName&gt;
+&lt;first_name&gt;Jason&lt;/first_name&gt;
+&lt;last_name&gt;Choe&lt;/last_name&gt;
+&lt;/userName&gt;
+&lt;/creditMemoInput&gt;</td><td><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+   <head>
+      <title>GlassFish Server Open Source Edition 3.0.1 - Error report</title>
+      <style type="text/css">
+         <!--H1 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;} H2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;} H3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;} BODY {font-family:Tahoma,Arial,sans-serif;color:black;background-color:white;} B {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;} P {font-family:Tahoma,Arial,sans-serif;background:white;color:black;font-size:12px;}A {color : black;}HR {color : #525D76;}-->
+      </style>
+   </head>
+   <body>
+      <h1>HTTP Status 500 -</h1>
+      <hr/>
+      <p>
+         <b>type</b>
+         Exception report
+      </p>
+      <p>
+         <b>message</b>
+      </p>
+      <p>
+         <b>description</b>
+         The server encountered an internal error () that prevented it from fulfilling this request.
+      </p>
+      <p>
+         <b>exception</b>
+         <pre>javax.servlet.ServletException: java.lang.NoClassDefFoundError: Could not initialize class org.apache.xmlrpc.client.XmlRpcSun15HttpTransport</pre>
+      </p>
+      <p>
+         <b>root cause</b>
+         <pre>java.lang.NoClassDefFoundError: Could not initialize class org.apache.xmlrpc.client.XmlRpcSun15HttpTransport</pre>
+      </p>
+      <p>
+         <b>note</b>
+         <u>The full stack traces of the exception and its root causes are available in the GlassFish Server Open Source Edition 3.0.1 logs.</u>
+      </p>
+      <hr/>
+      <h3>GlassFish Server Open Source Edition 3.0.1</h3>
+   </body>
+</html></td><td>NA</td><td>NA</td>]]></con:value></con:property><con:property><con:name>creatorSSO</con:name><con:value>michael.cook</con:value></con:property><con:property><con:name>InvoiceItemId</con:name><con:value>123345440</con:value></con:property><con:property><con:name>reasoncode</con:name><con:value>serviced failue</con:value></con:property><con:property><con:name>description</con:name><con:value>A generic description of events that demand this credit</con:value></con:property><con:property><con:name>commentType</con:name><con:value>INTERNAL</con:value></con:property><con:property><con:name>commentText</con:name><con:value>A comment for internal viewing purpose only</con:value></con:property></con:properties><con:reportParameters/><con:breakPoints><con:testStepId>01c540e9-f68d-408e-876b-682dd7b69235</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>ef5a86bf-d96c-410a-8048-3d52da69df9a</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints></con:testCase><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Get_Persons_Details" searchProperties="true" id="976f0bef-f66e-4a21-b3f7-dcec535b84ff"><con:description>TestCase generated for REST Resource [creditmemos] located at [/creditmemos]</con:description><con:settings/><con:testStep type="groovy" name="Init"><con:settings/><con:config><script>//set  the testdate file
+
+testRunner.testCase.testSuite.setPropertyValue("TestSuite_Name_2","GetPersonsDetails");
+testRunner.testCase.testSuite.setPropertyValue("Pass_Count_2","0");
+testRunner.testCase.testSuite.setPropertyValue("Fail_Count_2","0");
+testRunner.testCase.testSuite.setPropertyValue("Output","");
+testRunner.testCase.setPropertyValue("ExpectedStatus","200");
+testRunner.testCase.setPropertyValue("TestCaseDescription", "list persons details")
+testRunner.testCase.setPropertyValue("TC_ID", "TC_01")</script></con:config></con:testStep><con:testStep type="restrequest" name="GetPersonsDetails"><con:settings/><con:config service="PersonServiceAutomation" methodName="getPersons" resourcePath="/v1/person" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="REST Test Request" mediaType="application/xml"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>${#TestSuite#ENDPOINT}</con:endpoint><con:request/><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="ValidateGetPersonsDetails"><con:settings/><con:config><script><![CDATA[import com.eviware.soapui.*;
+
+String createRawRequest = "NA"
+String createRawResponse = "NA"
+
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils( context )
+def httpResponseHeaders = context.testCase.testSteps["GetPersonsDetails"].testRequest.response.responseHeaders
+def httpStatus = httpResponseHeaders["#status#"]
+def httpStatusCode = (httpStatus =~ "[1-5]\\d\\d")[0]
+
+
+def responseStatus = httpStatusCode
+//xmlResp.responseCode
+log.info "Actual_Status:"+responseStatus
+def exp_status =context.expand( '${#TestCase#ExpectedStatus}' )
+log.info "Expected_Status:"+exp_status
+if( responseStatus.equals(context.expand( '${#TestCase#ExpectedStatus}' ))){
+	status = "Pass"
+}
+else{
+	status="Fail"
+}
+
+
+testRunner.testCase.setPropertyValue("Status",status)
+log.info "status:" + status
+createRawRequest = new String(testRunner.testCase.testSteps["GetPersonsDetails"].testRequest.response.rawRequestData)
+createRawResponse =context.expand('${GetPersonsDetails#ResponseAsXml}')
+
+log.info "--------------------------------------"
+log.info "GetPersonsDetailsRequest"
+log.info "--------------------------------------"
+log.info createRawRequest
+log.info "--------------------------------------"
+log.info "GetPersonsDetailsResponse"
+log.info "--------------------------------------"
+log.info createRawResponse
+log.info "--------------------------------------"
+ createRawRequest = createRawRequest.replace("<","&lt;");
+ createRawRequest = createRawRequest.replace(">","&gt;");
+ createRawResponse = createRawResponse.replace("<","&lt;");
+ createRawResponse = createRawResponse.replace(">","&gt;");
+ 
+testRunner.testCase.setPropertyValue("GetPersonsDetailsRequest",createRawRequest);
+testRunner.testCase.setPropertyValue("GetPersonsDetailsResponse",createRawResponse)
+
+
+]]></script></con:config></con:testStep><con:testStep type="groovy" name="SetStatus"><con:settings/><con:config><script><![CDATA[int pass_count =testRunner.testCase.testSuite.getPropertyValue("Pass_Count_2").toInteger();
+int fail_count =testRunner.testCase.testSuite.getPropertyValue("Fail_Count_2").toInteger();
+testRunner.testCase.testSuite.setPropertyValue("TestSuite_Name","GetPersonDetails");
+
+if(testRunner.testCase.getPropertyValue("Status").equals("Pass")){
+ pass_count=pass_count+1;
+	testRunner.testCase.testSuite.setPropertyValue("Pass_Count_2",pass_count.toString());
+
+}
+else {
+	fail_count=fail_count+1;
+	testRunner.testCase.testSuite.setPropertyValue("Fail_Count_2",fail_count.toString());
+	
+}
+
+//log.info "pass_count"+pass_count ;
+//log.info "fail_count"+fail_count
+
+createRawRequest=testRunner.testCase.getPropertyValue("GetPersonsDetailsRequest");
+createRawResponse=testRunner.testCase.getPropertyValue("GetPersonsDetailsResponse")
+
+
+String output=testRunner.testCase.getPropertyValue("Output")
+
+if(output!=null){
+	output = output + "<tr><td>"+ context.expand( '${#TestCase#TC_ID}' ) +"</td>"+
+	            "<td>"+ context.expand( '${#TestCase#TestCaseDescription}' ) +"</td>"+
+                "<td>"+ context.expand( '${#TestCase#Status}' ) +"</td>"+
+                "<td>"+ createRawRequest +"</td>"+
+                "<td>"+ createRawResponse  +"</td>"+
+                 "<td>"+ context.expand( '${#TestCase#ErrorMsg}') +"</td></tr>" 
+}
+
+else{
+          output = "<tr><td>"+ context.expand( '${#TestCase#TC_ID}' ) +"</td>"+
+	            "<td>"+ context.expand( '${#TestCase#TestCaseDescription}' ) +"</td>"+
+                "<td>"+ context.expand( '${#TestCase#Status}' ) +"</td>"+
+                 "<td>"+ createRawRequest +"</td>"+
+                "<td>"+ createRawResponse  +"</td>"+
+                 "<td>"+ context.expand( '${#TestCase#ErrorMsg}') +"</td></tr>" 
+}
+    
+testRunner.testCase.setPropertyValue("Output",output)]]></script></con:config></con:testStep><con:testStep type="groovy" name="GenerateReport"><con:settings/><con:config><script><![CDATA[
+def file_path =testRunner.testCase.testSuite.getPropertyValue("GP_file_path");
+log.info "Results generated in "+file_path
+def file = new PrintWriter(file_path)
+String output=testRunner.testCase.getPropertyValue("Output")
+
+String header ="<html><head>Get_Persons_Details</head><body ><table border ='1' ><tr border ='1' bgcolor='green'><td><h3>TestCase_No</h3></td><td><h3>Description</h3></td><td><h3>Status</h3></td><td><h3>GetPersonsDetailsRequest</h3></td><td><h3>GetPersonsDetailsResponse</h3></td><td><h3>Error Message</h3></td></tr>";
+String trailer ="</td></tr></table></body></html>"
+
+file.println(header+output+trailer)
+file.flush()
+file.close()
+int pass_count= testRunner.testCase.testSuite.getPropertyValue("Pass_Count_2").toInteger()
+int fail_count= testRunner.testCase.testSuite.getPropertyValue("Fail_Count_2").toInteger()
+int total_count =pass_count+fail_count
+testRunner.testCase.testSuite.setPropertyValue("TestCase_Count_2",total_count.toString());
+log.info "-----------TEST_SUITE_SUMMARY---------"
+log.info "Total  No of testcases :"+total_count;
+log.info "Total  No of testcases Passed:"+pass_count;
+log.info "Total  No of testcases Failed:"+fail_count;
+log.info "GET_PERSONS_DETAILS="+pass_count
+log.info "--------------------------------------"]]></script></con:config></con:testStep><con:testStep type="groovy" name="Exit"><con:settings/><con:config><script>log.info "Exited Succesfully"</script></con:config></con:testStep><con:properties><con:property><con:name>TC_ID</con:name><con:value>TC_01</con:value></con:property><con:property><con:name>TestCaseDescription</con:name><con:value>AmountRange&lt;1000</con:value></con:property><con:property><con:name>Status</con:name><con:value>Pass</con:value></con:property><con:property><con:name>WorkFlow</con:name><con:value>Implementation Team</con:value></con:property><con:property><con:name>createdBy</con:name><con:value>michael.cook</con:value></con:property><con:property><con:name>account</con:name><con:value>80122</con:value></con:property><con:property><con:name>accountContactName</con:name><con:value>Kevin Ellenwood</con:value></con:property><con:property><con:name>customerName</con:name><con:value>TestCustomer1</con:value></con:property><con:property><con:name>customerNumber</con:name><con:value>RCN-000-024-238</con:value></con:property><con:property><con:name>incidentDate</con:name><con:value>03/12/2013</con:value></con:property><con:property><con:name>opportunityNumber</con:name><con:value>oppnumber</con:value></con:property><con:property><con:name>serviceFailure</con:name><con:value>100</con:value></con:property><con:property><con:name>IncidentId</con:name><con:value>123345440</con:value></con:property><con:property><con:name>InvoiceNo</con:name><con:value>100774781</con:value></con:property><con:property><con:name>TicketNo</con:name><con:value>101118-03433</con:value></con:property><con:property><con:name>currency</con:name><con:value>USD</con:value></con:property><con:property><con:name>AccountLevelProduct</con:name><con:value>181</con:value></con:property><con:property><con:name>amount</con:name><con:value>4956.23</con:value></con:property><con:property><con:name>calculation</con:name><con:value>Calculation</con:value></con:property><con:property><con:name>earnedRevenue</con:name><con:value>true</con:value></con:property><con:property><con:name>billingLocation</con:name><con:value>US</con:value></con:property><con:property><con:name>resDepartment</con:name><con:value>70</con:value></con:property><con:property><con:name>team</con:name><con:value>196</con:value></con:property><con:property><con:name>reasonForCredit</con:name><con:value>Credit  reason</con:value></con:property><con:property><con:name>prevention</con:name><con:value>Prevention</con:value></con:property><con:property><con:name>accountType</con:name><con:value>MANAGED_HOSTING</con:value></con:property><con:property><con:name>FirstName</con:name><con:value>Jason</con:value></con:property><con:property><con:name>LastName</con:name><con:value>Choe</con:value></con:property><con:property><con:name>isPrivateTicket</con:name><con:value>false</con:value></con:property><con:property><con:name>ExpectedStatus</con:name><con:value>201</con:value></con:property><con:property><con:name>SLANumber</con:name><con:value>slano1</con:value></con:property><con:property><con:name>Server</con:name><con:value/></con:property><con:property><con:name>token</con:name><con:value>880b650842289ca50d569a670707d840</con:value></con:property><con:property><con:name>creditMemoId</con:name><con:value>NA</con:value></con:property><con:property><con:name>SearchsStatus</con:name><con:value>Fail</con:value></con:property><con:property><con:name>testdata_path</con:name><con:value>C:\Users\kanc0573\ProjectDocs\workspace\cloudcreditmemo\servicetest\CreditMemo\src\test\resources//TestData//null</con:value></con:property><con:property><con:name>results_path</con:name><con:value>D:\Perumal\MarchMonth\march19\Updated\CreditMemoWebServicesAutomation\Output\Reports.html</con:value></con:property><con:property><con:name>SearchStatus</con:name><con:value>Fail</con:value></con:property><con:property><con:name>Comments</con:name><con:value>Invalid team</con:value></con:property><con:property><con:name>ErrorMsg</con:name><con:value/></con:property><con:property><con:name>CreateStatus</con:name><con:value>Fail</con:value></con:property><con:property><con:name>createCreditMemoRequest</con:name><con:value>POST http://10.6.115.86:3030/credit-memo-service-0.1-SNAPSHOT/v2/creditMemos HTTP/1.1
+Accept-Encoding: gzip,deflate
+X-Auth-Token: 
+Content-Type: application/xml
+Content-Length: 1019
+Host: 10.6.115.86:3030
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.1.1 (java 1.5)
+
+</con:value></con:property><con:property><con:name>createCreditMemoResponse</con:name><con:value>Date : Wed, 24 Apr 2013 19:36:19 GMT
+#status# : HTTP/1.1 201 Created
+Content-Length : 0
+Location : http://localhost:8080/credit-memo-service/v2/creditMemos/
+Content-Type : application/xml
+Server : GlassFish Server Open Source Edition 3.0.1
+X-Powered-By : Servlet/3.0
+</con:value></con:property><con:property><con:name>SearchCreditMemoRequest</con:name><con:value>NA</con:value></con:property><con:property><con:name>SearchCreditMemoResponse</con:name><con:value>NA</con:value></con:property><con:property><con:name>TC_Status</con:name><con:value>Pass</con:value></con:property><con:property><con:name>Output</con:name><con:value><![CDATA[null<tr><td>TC01</td><td>Fail</td><td>Null</td><td>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;creditMemoInput xsi:schemaLocation="https://staging.creditmemos.api.company.com/v1.0/docs/Schemas/CreditMemo.xsd" xmlns="https://creditmemo.api.company.com/CreditMemo" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+&lt;serviceFailure&gt;100&lt;/serviceFailure&gt;
+&lt;product&gt;
+&lt;accountLevelProductId&gt;181&lt;/accountLevelProductId&gt;
+&lt;/product&gt;
+&lt;!--&lt;devices&gt;&lt;/devices&gt;--&gt;
+&lt;incidentDate&gt;03/12/2013&lt;/incidentDate&gt;
+&lt;tickets&gt;&lt;id&gt;101118-03433&lt;/id&gt;&lt;/tickets&gt;
+&lt;invoices&gt;&lt;id&gt;100774781&lt;/id&gt;&lt;/invoices&gt;
+&lt;creditAmount&gt;
+&lt;currency&gt;USD&lt;/currency&gt;
+&lt;amount&gt;4956.23&lt;/amount&gt;
+&lt;/creditAmount&gt;
+&lt;calculation&gt;Calculation&lt;/calculation&gt;
+&lt;earnedRevenue&gt;true&lt;/earnedRevenue&gt;
+&lt;responsibleDept&gt;70&lt;/responsibleDept&gt;
+&lt;team&gt;196&lt;/team&gt;
+&lt;billingLocation&gt;US&lt;/billingLocation&gt;
+&lt;reasonForCredit&gt;Credit  reason&lt;/reasonForCredit&gt;
+&lt;prevention&gt;Prevention&lt;/prevention&gt;
+&lt;createdBy&gt;michael.cook&lt;/createdBy&gt;
+&lt;account&gt;80122&lt;/account&gt;
+&lt;accountContactName&gt;Kevin Ellenwood&lt;/accountContactName&gt;
+&lt;customerName&gt;TestCustomer1&lt;/customerName&gt;
+&lt;customerNumber&gt;RCN-000-024-238&lt;/customerNumber&gt;
+&lt;isPrivateTicket&gt;false&lt;/isPrivateTicket&gt;
+&lt;tokenId&gt;6a0a709e26121aaf7f60961bac4cab25&lt;/tokenId&gt;
+&lt;userName&gt;
+&lt;first_name&gt;Jason&lt;/first_name&gt;
+&lt;last_name&gt;Choe&lt;/last_name&gt;
+&lt;/userName&gt;
+&lt;/creditMemoInput&gt;</td><td><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+   <head>
+      <title>GlassFish Server Open Source Edition 3.0.1 - Error report</title>
+      <style type="text/css">
+         <!--H1 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;} H2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;} H3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;} BODY {font-family:Tahoma,Arial,sans-serif;color:black;background-color:white;} B {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;} P {font-family:Tahoma,Arial,sans-serif;background:white;color:black;font-size:12px;}A {color : black;}HR {color : #525D76;}-->
+      </style>
+   </head>
+   <body>
+      <h1>HTTP Status 500 -</h1>
+      <hr/>
+      <p>
+         <b>type</b>
+         Exception report
+      </p>
+      <p>
+         <b>message</b>
+      </p>
+      <p>
+         <b>description</b>
+         The server encountered an internal error () that prevented it from fulfilling this request.
+      </p>
+      <p>
+         <b>exception</b>
+         <pre>javax.servlet.ServletException: java.lang.NoClassDefFoundError: Could not initialize class org.apache.xmlrpc.client.XmlRpcSun15HttpTransport</pre>
+      </p>
+      <p>
+         <b>root cause</b>
+         <pre>java.lang.NoClassDefFoundError: Could not initialize class org.apache.xmlrpc.client.XmlRpcSun15HttpTransport</pre>
+      </p>
+      <p>
+         <b>note</b>
+         <u>The full stack traces of the exception and its root causes are available in the GlassFish Server Open Source Edition 3.0.1 logs.</u>
+      </p>
+      <hr/>
+      <h3>GlassFish Server Open Source Edition 3.0.1</h3>
+   </body>
+</html></td><td>NA</td><td>NA</td>]]></con:value></con:property><con:property><con:name>creatorSSO</con:name><con:value>michael.cook</con:value></con:property><con:property><con:name>InvoiceItemId</con:name><con:value>123345440</con:value></con:property><con:property><con:name>reasoncode</con:name><con:value>serviced failue</con:value></con:property><con:property><con:name>description</con:name><con:value>A generic description of events that demand this credit</con:value></con:property><con:property><con:name>commentType</con:name><con:value>INTERNAL</con:value></con:property><con:property><con:name>commentText</con:name><con:value>A comment for internal viewing purpose only</con:value></con:property></con:properties><con:reportParameters/><con:breakPoints><con:testStepId>01c540e9-f68d-408e-876b-682dd7b69235</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>ef5a86bf-d96c-410a-8048-3d52da69df9a</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints></con:testCase><con:properties><con:property><con:name>ENDPOINT</con:name><con:value>://:</con:value></con:property><con:property><con:name>CREATE_PERSON_DETAILS_TEST_DATA</con:name><con:value>CreatePersonDetails_SmokeTest.csv</con:value></con:property><con:property><con:name>summary_path</con:name><con:value>\Summary.html</con:value></con:property><con:property><con:name>CM_file_path</con:name><con:value>\Create_PersonDetails_Report.html</con:value></con:property><con:property><con:name>GP_file_path</con:name><con:value>\Get_PersonsDetails_Report.html</con:value></con:property><con:property><con:name>Total_Passed_Count</con:name><con:value>0</con:value></con:property><con:property><con:name>Total_Failed_Count</con:name><con:value>0</con:value></con:property></con:properties></con:testSuite><con:properties/><con:wssContainer/></con:soapui-project>
